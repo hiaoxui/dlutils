@@ -3,9 +3,9 @@ import logging
 
 import torch
 from lightning.pytorch.strategies import DDPStrategy
-from .ds_strategy import MyDeepSpeedStrategy
+from dlutils.ds_strategy import MyDeepSpeedStrategy
 
-from .common import logger
+from dlutils.common import logger
 
 
 def gen_gpu_args(
@@ -28,16 +28,16 @@ def gen_gpu_args(
                 stage=deepspeed, offload_optimizer=offload_optim, offload_parameters=offload_param,
                 logging_level=logging.ERROR
             ),
-        }
+        }, n_gpu
     elif strategy == 'ddp' and n_gpu > 1:
         return 'ddp', {
             'strategy': DDPStrategy('gpu', find_unused_parameters=True),
             'devices': n_gpu, 'precision': precision,
-        }
+        }, n_gpu
     elif n_gpu == 1:
-        return 'single', {'devices': 1, 'accelerator': 'gpu', 'precision': precision}
+        return 'single', {'devices': 1, 'accelerator': 'gpu', 'precision': precision}, n_gpu
     else:
-        return 'cpu', {'accelerator': 'cpu'}
+        return 'cpu', {'accelerator': 'cpu'}, n_gpu
 
 
 def bf16_available():

@@ -9,7 +9,7 @@ import torch
 from lightning.pytorch import loggers as pl_loggers, Trainer
 from lightning.pytorch.utilities.deepspeed import convert_zero_checkpoint_to_fp32_state_dict
 
-from .common import logger
+from dlutils.common import logger
 
 Checkpoint = namedtuple('checkpoint', ('step', 'top', 'model_path', 'predict_path'))
 
