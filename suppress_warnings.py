@@ -2,22 +2,31 @@ import warnings
 import logging
 
 
-warnings.filterwarnings('ignore', r'.*Setting ds_accelerator.*')
-warnings.filterwarnings('ignore', r'.*The `srun` command is available on your system but is not used.*')
-warnings.filterwarnings('ignore', r'.*The dataloader, (train|val)_dataloader, does not have many workers.*')
-warnings.filterwarnings('ignore', r'.*[YIH]PU available*')
-warnings.filterwarnings('ignore', r'.*TPU available*')
-warnings.filterwarnings('ignore', r'.*Checkpoint directory .* exists and is not empty')
+filtered_out = [
+    'The `srun` command is available on your system but is not used',
+    'dataloader, does not have many workers',
+    'YPU available', 'TPU available', 'IPU available', 'HPU available',
+    'exists and is not empty', 'Setting ds_accelerator', 'that has Tensor Cores',
+    '- CUDA_VISIBLE_DEVICES'
+]
+
+for fo_ in filtered_out:
+    warnings.filterwarnings('ignore', f'.*{fo_}.*')
 
 
 class SupressFilter(logging.Filter):
     def filter(self, record):
-        if 'Setting ds_accelerator' in record.msg:
-            return False
+        for fo in filtered_out:
+            if fo.lower() in record.msg.lower():
+                return False
         return True
 
 
-logging.getLogger('DeepSpeed').addFilter(SupressFilter())
+for logger_name in [
+    'DeepSpeed', 'lightning_utilities.core.rank_zero', 'lightning.pytorch.utilities.rank_zero',
+    'lightning.pytorch.accelerators.cuda'
+]:
+    logging.getLogger(logger_name).addFilter(SupressFilter())
 
 
 def suppress():

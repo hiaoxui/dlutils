@@ -3,9 +3,9 @@ import logging
 
 import torch
 from lightning.pytorch.strategies import DDPStrategy
-from dlutils.ds_strategy import MyDeepSpeedStrategy
+from lightning.pytorch.utilities import rank_zero_info
 
-from dlutils.common import logger
+from dlutils.ds_strategy import MyDeepSpeedStrategy
 
 
 def gen_gpu_args(
@@ -16,12 +16,11 @@ def gen_gpu_args(
         precision = '16-mixed'
     # deepspeed stage is default to 2 if n_gpu > 0
     if torch.cuda.device_count() < n_gpu:
-        logger.warning(f'Reduce the number of GPU to {torch.cuda.device_count()}')
+        rank_zero_info(f'Reduce the number of GPU to {torch.cuda.device_count()}')
         n_gpu = torch.cuda.device_count()
     if deepspeed is None:
         deepspeed = 2 if n_gpu > 1 else 0
     if strategy == 'deepspeed' and deepspeed > 0:
-        logger.debug('Using DeepSpeed')
         return 'deepspeed_cpu' if offload_optim else 'deepspeed', {
             'accelerator': 'gpu', 'devices': n_gpu, 'precision': precision,
             'strategy': MyDeepSpeedStrategy(
