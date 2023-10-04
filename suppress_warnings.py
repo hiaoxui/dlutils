@@ -27,7 +27,7 @@ def suppress():
     except ImportError:
         pass
     try:
-        from deepspeed.utils import logger as ds_logger
-        ds_logger.setLevel('WARNING')
+        import deepspeed
+        logging.getLogger('DeepSpeed').setLevel('WARNING')
     except ImportError:
         pass
