@@ -26,6 +26,8 @@ def process_args(args):
         extras['model_path'], extras['resume_from'] = ckpt.model_path, ckpt.top
         if args.o is None:
             extras['predict_path'] = ckpt.predict_path
+        if not args.resume:
+            extras.pop('resume_from')
     if args.o is not None:
         extras['predict_path'] = args.o
     if args.test:

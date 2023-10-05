@@ -7,7 +7,7 @@ filtered_out = [
     'dataloader, does not have many workers',
     'YPU available', 'TPU available', 'IPU available', 'HPU available',
     'exists and is not empty', 'Setting ds_accelerator', 'that has Tensor Cores',
-    '- CUDA_VISIBLE_DEVICES'
+    '- CUDA_VISIBLE_DEVICES', 'Found keys that are in the model state'
 ]
 
 for fo_ in filtered_out:

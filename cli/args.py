@@ -22,6 +22,7 @@ def add_common_args(p: ArgumentParser, project_name: str):
     p.add_argument('--exp', type=str, default=Default('debug'))
     p.add_argument('-o', type=str, default='/tmp')
     p.add_argument('--debug', action='store_true')
-    p.add_argument('--test', type=BooleanOptionalAction, default=Default(False))
+    p.add_argument('--test', action=BooleanOptionalAction, default=Default(False))
+    p.add_argument('--resume', action=BooleanOptionalAction, default=Default(True))
     # other necessary args
     # val-interval n-val bsz eff-bsz
