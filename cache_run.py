@@ -2,7 +2,6 @@ import os
 import pickle
 import json
 
-from scipy.sparse import save_npz, load_npz
 
 
 def cache_run(func):
@@ -12,6 +11,7 @@ def cache_run(func):
             if cache_path.endswith('.pkl'):
                 return pickle.load(open(cache_path, 'rb'))
             elif cache_path.endswith('.npz'):
+                from scipy.sparse import load_npz
                 return load_npz(cache_path)
             elif cache_path.endswith('.jsonl'):
                 return list(map(json.loads, open(cache_path)))
@@ -25,6 +25,7 @@ def cache_run(func):
             if cache_path.endswith('.pkl'):
                 pickle.dump(ret, open(cache_path, 'wb'))
             elif cache_path.endswith('.npz'):
+                from scipy.sparse import save_npz
                 save_npz(open(cache_path, 'wb'), ret)
             elif cache_path.endswith('.jsonl'):
                 open(cache_path, 'w').write('\n'.join(map(json.dumps, ret)))
