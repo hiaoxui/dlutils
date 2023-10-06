@@ -22,7 +22,7 @@ def add_gpu_arguments(p: ArgumentParser, default_strategy: str):
 
 
 def add_common_args(p: ArgumentParser, project_name: str):
-    p.add_argument('--ckpt', metavar='CKPT_PATH', type=str, default=Default(), help='checkpoint path')
+    p.add_argument('--ckpt', metavar='CKPT_PATH', type=str, help='checkpoint path')
     p.add_argument(
         '--cache', type=str, default=Default(os.path.join(os.environ.get('HOME', ''), project_name)),
         help='root cache path'
