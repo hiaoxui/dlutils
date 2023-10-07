@@ -16,7 +16,9 @@ def global_step(path):
     fet = re.findall(r'epoch=0-step=(\d+)', path)
     if fet:
         return int(fet[0])
-    return torch.load(path, map_location='cpu')['global_step']
+    if path.split('.')[0].isdigit():
+        return int(path.split('.')[0])
+    return torch.load(path, map_location='cpu').get('global_step', 0)
 
 
 def parse_ds_ckpt(path: str) -> Checkpoint:
