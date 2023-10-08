@@ -6,8 +6,7 @@ import re
 
 import torch
 from lightning.pytorch.utilities.deepspeed import convert_zero_checkpoint_to_fp32_state_dict
-
-from dlutils.common import logger
+from lightning.pytorch.utilities import rank_zero_info
 
 Checkpoint = namedtuple('checkpoint', ('step', 'top', 'model_path', 'predict_path'))
 
@@ -63,7 +62,7 @@ def find_ckpt(ckpt) -> Optional[Checkpoint]:
 def process_ckpt(args):
     assert os.path.exists(args.ckpt), f'ckpt {args.ckpt} not exist'
     ckpt = find_ckpt(args.ckpt)
-    logger.warning(f'Resuming from {ckpt.top}.')
+    rank_zero_info(f'Resuming from {ckpt.top}.')
     log_dir = os.path.dirname(os.path.dirname(ckpt.top))
     version = os.path.basename(log_dir)
     hparams = yaml.load(open(os.path.join(log_dir, 'hparams.yaml')), yaml.Loader)
