@@ -3,7 +3,6 @@ import pickle
 import json
 
 
-
 def cache_run(func):
     def inner(*args, **kwargs):
         cache_path = kwargs.pop('cache_path', None)
