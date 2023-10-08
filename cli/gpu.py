@@ -28,7 +28,7 @@ def gen_gpu_args(
                 logging_level=logging.ERROR
             ),
         }, n_gpu
-    elif strategy == 'ddp' and n_gpu > 1:
+    elif n_gpu > 1:
         return 'ddp', {
             'strategy': DDPStrategy('gpu', find_unused_parameters=True),
             'devices': n_gpu, 'precision': precision,
