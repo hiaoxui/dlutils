@@ -1,7 +1,6 @@
 from typing import *
 
 from torch.utils import data
-from datasets import load_dataset, DatasetDict
 from transformers import PreTrainedTokenizer, AutoTokenizer
 
 
@@ -12,6 +11,7 @@ class BaseLazyDataset:
     ):
         self._tokenizer_name, self._tokenizer_kwargs = tokenizer_name, tokenizer_kwargs
         self._data_args, self._split = data_args, split
+        from datasets import DatasetDict
         self._data: Optional[DatasetDict] = None
         self._tokenizer: Optional[PreTrainedTokenizer] = None
 
@@ -26,6 +26,7 @@ class BaseLazyDataset:
         self._tokenizer = self._data = None
 
     def _prepare_data(self):
+        from datasets import load_dataset
         if self._data_args is not None and self._data is None:
             self._data = load_dataset(*self._data_args, split=self._split)
 

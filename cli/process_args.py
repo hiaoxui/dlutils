@@ -1,6 +1,5 @@
 from typing import *
 from dataclasses import dataclass
-import os
 
 from lightning.pytorch import loggers as pl_loggers
 

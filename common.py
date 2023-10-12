@@ -1,7 +1,6 @@
 import logging
 import os
 import warnings
-import datasets
 import re
 from collections import defaultdict
 
@@ -55,22 +54,6 @@ def get_process_logger():
     else:
         logger_.setLevel('WARNING')
     return logger_
-
-
-def filter_warnings():
-    datasets.utils.logging.set_verbosity_error()
-    datasets.builder.logger.setLevel('ERROR')
-    for keyword in [
-        'Using the latest cached version of the module',
-        'Found cached dataset',
-        'NCCL backend in DeepSpeed not yet implemented',
-        'does not have many workers which',
-        # '\'plutils.args\' found in',
-        'Setting ds_accelerator to cuda',
-        'LOCAL_RANK.*CUDA_VISIBLE_DEVICES',
-        'UserWarning: Positional args are being deprecated',
-    ]:
-        warnings.filterwarnings('ignore', '.*' + keyword + '.*')
 
 
 logger = configure_logger()
