@@ -4,10 +4,12 @@ import logging
 
 filtered_out = [
     'The `srun` command is available on your system but is not used',
-    'dataloader, does not have many workers',
+    'does not have many workers',
     'YPU available', 'TPU available', 'IPU available', 'HPU available',
     'exists and is not empty', 'Setting ds_accelerator', 'that has Tensor Cores',
-    '- CUDA_VISIBLE_DEVICES', 'Found keys that are in the model state'
+    '- CUDA_VISIBLE_DEVICES', 'Found keys that are in the model state',
+    'Positional args are being deprecated', 'could not find the monitored key',
+    'torch.cuda.*DtypeTensor constructors'
 ]
 
 for fo_ in filtered_out:
