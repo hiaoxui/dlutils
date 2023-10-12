@@ -32,5 +32,6 @@ def add_common_args(p: ArgumentParser, project_name: str):
     p.add_argument('--debug', action='store_true', help='if on, will disable multiprocess dataloader')
     p.add_argument('--test', action=BooleanOptionalAction, default=Default(False), help='run on the test set')
     p.add_argument('--resume', action=BooleanOptionalAction, default=Default(True), help='resume optim states')
+    p.add_argument('--warmup', type=int, default=Default(1000), help='#warmup steps')
     # other necessary args
     # val-interval n-val bsz eff-bsz
