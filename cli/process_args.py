@@ -52,14 +52,15 @@ def process_args(args):
     extras['gpu_config'], extras['gpu_kwargs'], extras['n_actual_gpu'] = gen_gpu_args(
         args.n_gpu, args.precision, args.strategy, args.deepspeed, args.offload_optim, args.offload_param
     )
+    tmp_log_path = os.path.join(os.environ.get('TMP', '/tmp'), 'nugget')
     if args.action == 'train':
         tensorboard = pl_loggers.TensorBoardLogger(
-            args.cache if not args.debug else '/tmp/debug', name=args.exp, version=version
+            args.cache if not args.debug else tmp_log_path, name=args.exp, version=version
         )
         extras['default_root_dir'] = tensorboard.log_dir
     else:
         tensorboard = None
-        extras['default_root_dir'] = os.path.join(os.environ.get('TMP', '/tmp'), 'nugget')
+        extras['default_root_dir'] = tmp_log_path
     if args.ckpt is None and tensorboard is not None:
         tensorboard.log_hyperparams(args)
 
