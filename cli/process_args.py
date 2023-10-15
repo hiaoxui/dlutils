@@ -1,4 +1,5 @@
 from typing import *
+import os
 from dataclasses import dataclass
 
 from lightning.pytorch import loggers as pl_loggers
@@ -58,7 +59,7 @@ def process_args(args):
         extras['default_root_dir'] = tensorboard.log_dir
     else:
         tensorboard = None
-        extras['default_root_dir'] = '/tmp/nugget'
+        extras['default_root_dir'] = os.path.join(os.environ.get('TMP', '/tmp'), 'nugget')
     if args.ckpt is None and tensorboard is not None:
         tensorboard.log_hyperparams(args)
 
