@@ -21,17 +21,17 @@ def num_seq(nums):
 
 def param_names(params, trainable=True):
     if isinstance(params, torch.nn.Module):
-        params = [n for n, p in params.named_parameters() if p.requires_grad or not trainable]
+        params = [(name, pa) for name, pa in params.named_parameters() if pa.requires_grad or not trainable]
     seen, ret, nums = set(), [], defaultdict(list)
-    for p in params:
-        if re.findall(r'\d+', p):
-            n = int(re.findall(r'\d+', p)[0])
-            p = re.sub(r'(\d+)', '#', p)
-            nums[p].append(n)
-        if p not in seen:
-            seen.add(p)
-            ret.append(p)
-    return [r if r not in nums else r.replace('#', num_seq(nums[r])) for r in ret]
+    for name, pa in params:
+        if re.findall(r'\d+', name):
+            n = int(re.findall(r'\d+', name)[0])
+            name = re.sub(r'(\d+)', '#', name, 1)
+            nums[name].append(n)
+        if name not in seen:
+            seen.add(name)
+            ret.append([name, tuple(pa.shape)])
+    return [(name if name not in nums else name.replace('#', num_seq(nums[name])), sha) for name, sha in ret]
 
 
 def configure_logger():
