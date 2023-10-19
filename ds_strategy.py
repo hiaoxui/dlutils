@@ -19,7 +19,7 @@ class MyDeepSpeedStrategy(DeepSpeedStrategy):
         if torch.distributed.get_backend() == "nccl":
             logging.warning('doing nccl')
             import ilock
-            with ilock.ILock('barrier', lock_directory='/srv/local2/tmp'):
+            with ilock.ILock('barrier', lock_directory='/home/gqin2'):
                 did = self.determine_ddp_device_ids()
             logging.warning(f'got did {did}')
             torch.distributed.barrier(device_ids=did)
