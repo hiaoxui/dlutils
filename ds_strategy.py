@@ -1,3 +1,4 @@
+import time
 from typing import *
 import logging
 
@@ -21,6 +22,7 @@ class MyDeepSpeedStrategy(DeepSpeedStrategy):
             import ilock
             with ilock.ILock('barrier', lock_directory='/home/gqin2'):
                 did = self.determine_ddp_device_ids()
+                time.sleep(1.0)
             logging.warning(f'got did {did}')
             torch.distributed.barrier(device_ids=did)
         else:
