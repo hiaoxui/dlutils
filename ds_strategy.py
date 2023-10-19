@@ -14,12 +14,15 @@ from lightning.fabric.utilities.distributed import (
 class MyDeepSpeedStrategy(DeepSpeedStrategy):
 
     def barrier(self, *args: Any, **kwargs: Any) -> None:
+        logging.warning('enter barrier')
         if not _distributed_available():
             logging.warning('not available')
             return
         if torch.distributed.get_backend() == "nccl":
             logging.warning('nccl')
-            torch.distributed.barrier(device_ids=self.determine_ddp_device_ids())
+            did = self.determine_ddp_device_ids()
+            logging.warning('got did')
+            torch.distributed.barrier(device_ids=did)
         else:
             logging.warning('not nccl')
             torch.distributed.barrier()
