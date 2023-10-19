@@ -15,15 +15,22 @@ from lightning.fabric.utilities.distributed import (
 class MyDeepSpeedStrategy(DeepSpeedStrategy):
 
     def barrier(self, *args: Any, **kwargs: Any) -> None:
+        debug = kwargs.get('debug', False)
+        if debug:
+            logging.warning('before available')
         if not _distributed_available():
             return
+        if debug:
+            logging.warning('after available')
         if torch.distributed.get_backend() == "nccl":
-            logging.warning('doing nccl')
+            if debug:
+                logging.warning('doing nccl')
             import ilock
             with ilock.ILock('barrier', lock_directory='/home/gqin2'):
                 did = self.determine_ddp_device_ids()
                 time.sleep(1.0)
-            logging.warning(f'got did {did}')
+            if debug:
+                logging.warning(f'got did {did}')
             torch.distributed.barrier(device_ids=did)
         else:
             torch.distributed.barrier()
