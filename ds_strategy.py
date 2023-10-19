@@ -1,9 +1,29 @@
 from typing import *
+import logging
 
+import torch
 from lightning.pytorch.strategies.deepspeed import DeepSpeedStrategy, MisconfigurationException
+from lightning.fabric.utilities.distributed import (
+    _distributed_available,
+    _get_default_process_group_backend_for_device,
+    _init_dist_connection,
+    _sync_ddp_if_available,
+)
 
 
 class MyDeepSpeedStrategy(DeepSpeedStrategy):
+
+    def barrier(self, *args: Any, **kwargs: Any) -> None:
+        if not _distributed_available():
+            logging.warning('not available')
+            return
+        if torch.distributed.get_backend() == "nccl":
+            logging.warning('nccl')
+            torch.distributed.barrier(device_ids=self.determine_ddp_device_ids())
+        else:
+            logging.warning('not nccl')
+            torch.distributed.barrier()
+
     def load_checkpoint(self, checkpoint_path) -> Dict[str, Any]:
         if self.load_full_weights and self.zero_stage_3:
             # Broadcast to ensure we load from the rank 0 checkpoint
