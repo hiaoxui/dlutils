@@ -20,7 +20,7 @@ def gen_gpu_args(
         n_gpu = torch.cuda.device_count()
     if deepspeed is None:
         deepspeed = 2 if n_gpu > 1 else 0
-    if strategy == 'deepspeed' and deepspeed > 0:
+    if strategy == 'deepspeed' and deepspeed > 0 and n_gpu > 0:
         return 'deepspeed_cpu' if offload_optim else 'deepspeed', {
             'accelerator': 'gpu', 'devices': n_gpu, 'precision': precision,
             'strategy': MyDeepSpeedStrategy(
