@@ -31,7 +31,10 @@ class MyDeepSpeedStrategy(DeepSpeedStrategy):
                 time.sleep(1.0)
             if debug:
                 logging.warning(f'got did {did}')
-            torch.distributed.barrier(device_ids=did)
+            work = torch.distributed.barrier(device_ids=did, async_op=True)
+            if debug:
+                logging.warning(f'got work {work}')
+            work.wait()
         else:
             torch.distributed.barrier()
 
