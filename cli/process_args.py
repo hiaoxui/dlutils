@@ -62,7 +62,7 @@ def process_args(args):
     )
     tmp_log_path = os.path.join(os.environ.get('TMP', '/tmp'), 'nugget')
     if args.action == 'train':
-        if use_wandb():
+        if use_wandb() and args.logger in [None, 'wandb']:
             tensorboard = pl_loggers.WandbLogger(
                 name=args.exp, save_dir=args.cache, project='col', entity=os.environ.get('WANDB_ENTITY'),
                 version=version
