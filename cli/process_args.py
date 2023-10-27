@@ -67,8 +67,11 @@ def process_args(args):
                 name=args.exp, save_dir=args.cache, project='col', entity=os.environ.get('WANDB_ENTITY'),
                 version=version
             )
-            extras['default_root_dir'] = os.path.join(args.cache, args.exp, tensorboard.version)
-            save_hyperparam(args, extras['default_root_dir'])
+            if tensorboard.version is not None:
+                extras['default_root_dir'] = os.path.join(args.cache, args.exp, tensorboard.version)
+                save_hyperparam(args, extras['default_root_dir'])
+            else:
+                extras['default_root_dir'] = os.path.join(args.cache, args.exp)
         else:
             tensorboard = pl_loggers.TensorBoardLogger(
                 args.cache if not args.debug else tmp_log_path, name=args.exp, version=version
