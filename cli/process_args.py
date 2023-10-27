@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from lightning.pytorch import loggers as pl_loggers
 
-from dlutils.cli.ckpt import process_ckpt
+from dlutils.cli.ckpt import process_ckpt, save_hyperparam
 from dlutils.cli.gpu import gen_gpu_args
 
 
@@ -14,6 +14,14 @@ class Default:
 
     def __repr__(self):
         return str(self.value)
+
+
+def use_wandb():
+    try:
+        import wandb
+    except ImportError:
+        return False
+    return os.path.exists(os.path.join(os.environ.get('HOME', '.'), '.netrc'))
 
 
 def process_args(args):
@@ -54,10 +62,18 @@ def process_args(args):
     )
     tmp_log_path = os.path.join(os.environ.get('TMP', '/tmp'), 'nugget')
     if args.action == 'train':
-        tensorboard = pl_loggers.TensorBoardLogger(
-            args.cache if not args.debug else tmp_log_path, name=args.exp, version=version
-        )
-        extras['default_root_dir'] = tensorboard.log_dir
+        if use_wandb():
+            tensorboard = pl_loggers.WandbLogger(
+                name=args.exp, save_dir=args.cache, project='col', entity=os.environ.get('WANDB_ENTITY'),
+                version=version
+            )
+            extras['default_root_dir'] = os.path.join(args.cache, args.exp, tensorboard.version)
+            save_hyperparam(args, extras['default_root_dir'])
+        else:
+            tensorboard = pl_loggers.TensorBoardLogger(
+                args.cache if not args.debug else tmp_log_path, name=args.exp, version=version
+            )
+            extras['default_root_dir'] = tensorboard.log_dir
     else:
         tensorboard = None
         extras['default_root_dir'] = tmp_log_path

@@ -11,6 +11,14 @@ from lightning.pytorch.utilities import rank_zero_info
 Checkpoint = namedtuple('checkpoint', ('step', 'top', 'model_path', 'predict_path'))
 
 
+def save_hyperparam(args, path):
+    os.makedirs(path, exist_ok=True)
+    yaml_path = os.path.join(path, 'hparams.yaml')
+    if not os.path.exists(yaml_path):
+        with open(yaml_path, 'w') as fp:
+            yaml.dump(vars(args), fp, yaml.Dumper)
+
+
 def global_step(path):
     fet = re.findall(r'epoch=0-step=(\d+)', path)
     if fet:
