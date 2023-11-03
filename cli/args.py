@@ -10,7 +10,7 @@ def add_gpu_arguments(p: ArgumentParser, default_strategy: str):
         help='multigpu backend: deepspeed or ddp'
     )
     p.add_argument(
-        '--precision', type=str, default=Default('bf16-mixed'), help='default to bf16-mixed'
+        '--precision', type=str, default=Default('32'), help='default to 32'
     )
     p.add_argument(
         '--n-gpu', type=int, default=Default(16),
