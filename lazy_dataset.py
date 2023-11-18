@@ -13,12 +13,11 @@ class BaseLazyDataset:
         self._data_args, self._split = data_args, split
         from datasets import DatasetDict
         self._data: Optional[DatasetDict] = None
-        self._tokenizer: Optional[PreTrainedTokenizer] = None
+        self._tokenizer: Optional[PreTrainedTokenizer] = AutoTokenizer.from_pretrained(
+            self._tokenizer_name, **tokenizer_kwargs, use_fast=False
+        )
 
     def init(self):
-        if self._tokenizer is None:
-            kwargs = dict() if self._tokenizer_kwargs is None else self._tokenizer_kwargs
-            self._tokenizer = AutoTokenizer.from_pretrained(self._tokenizer_name, **kwargs, use_fast=False)
         if self._data is None:
             self._prepare_data()
 
