@@ -1,6 +1,8 @@
 import warnings
 import logging
 
+from transformers import AutoConfig, AutoTokenizer
+
 
 filtered_out = [
     'The `srun` command is available on your system but is not used',
@@ -42,3 +44,16 @@ def suppress():
         logging.getLogger('DeepSpeed').setLevel('WARNING')
     except ImportError:
         pass
+
+
+def load_tokenizer(pretrained: str, **kwargs):
+    # warnings are avoided
+    tokenizer_base_logger = logging.getLogger('transformers.tokenization_utils_base')
+    tokenizer_base_logger.setLevel('ERROR')
+    config = AutoConfig.from_pretrained(pretrained)
+    if config.model_type == 't5':
+        kwargs['model_max_length'] = 999999
+        kwargs['legacy'] = False
+    elif config.model_type == 'llama':
+        kwargs['legacy'] = False
+    return AutoTokenizer.from_pretrained(pretrained, **kwargs)
