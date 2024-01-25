@@ -6,9 +6,11 @@ from torch.utils import data
 
 class BaseLazyDataset:
     def __init__(
-            self, data_args: Iterable = None, split: Optional[str] = None,
+            self, data_args: Iterable = None, data_kwargs: Optional[Dict[str, Any]] = None, split: Optional[str] = None,
     ):
-        self._data_args, self._split = data_args, split
+        self._data_args, self._data_kwargs, self._split = data_args, data_kwargs, split
+        if data_kwargs is None:
+            self._data_kwargs = {}
         from datasets import DatasetDict
         self._data: Optional[DatasetDict] = None
 
@@ -35,7 +37,7 @@ class BaseLazyDataset:
                 args[0] = os.path.join(args[0], self._split)
             return load_from_disk(*args)
         else:
-            return load_dataset(*self._data_args, split=self._split)
+            return load_dataset(*self._data_args, **self._data_kwargs, split=self._split)
 
     def _prepare_data(self):
         if self._data_args is not None and self._data is None:
@@ -48,10 +50,10 @@ class IterableLazyDataset(BaseLazyDataset, data.IterableDataset):
 
 class LazyDataset(BaseLazyDataset, data.Dataset):
     def __init__(
-            self, data_args: Optional[Iterable] = None, split: Optional[str] = None,
-            data_length: Optional[int] = None
+            self, data_args: Optional[Iterable] = None, data_kwargs: Optional[Dict[str, Any]] = None,
+            split: Optional[str] = None, data_length: Optional[int] = None,
     ):
-        super().__init__(data_args, split)
+        super().__init__(data_args, data_kwargs, split)
         self._data_length = data_length
 
     def __len__(self):
