@@ -38,7 +38,7 @@ def process_args(args):
             extras.pop('resume_from')
     if args.o is not None:
         extras['predict_path'] = args.o
-    if args.test:
+    if args.test and 'predict_path' in extras:
         extras['predict_path'] += '.test'
 
     # run over all examples fore predict
