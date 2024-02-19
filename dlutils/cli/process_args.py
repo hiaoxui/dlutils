@@ -60,7 +60,7 @@ def process_args(args):
     extras['gpu_config'], extras['gpu_kwargs'], extras['n_actual_gpu'] = gen_gpu_args(
         args.n_gpu, args.precision, args.strategy, args.deepspeed, args.offload_optim, args.offload_param
     )
-    tmp_log_path = os.path.join(os.environ.get('TMP', '/tmp'), 'nugget')
+    tmp_log_path = os.path.join(os.environ.get('TMP', '/tmp'), args.exp)
     if args.action == 'train':
         if use_wandb() and args.logger in [None, 'wandb']:
             tensorboard = pl_loggers.WandbLogger(
