@@ -1,5 +1,6 @@
 from typing import *
 import os
+from copy import deepcopy
 
 from torch.utils import data
 
@@ -32,7 +33,7 @@ class BaseLazyDataset:
         if self._data is not None:
             return self._data
         if os.path.exists(self._data_args[0]):
-            args = list(self._data_args)
+            args = deepcopy(list(self._data_args))
             if self._split is not None:
                 args[0] = os.path.join(args[0], self._split)
             return load_from_disk(*args)
