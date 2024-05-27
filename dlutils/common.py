@@ -1,6 +1,6 @@
 import logging
 import os
-import warnings
+from typing import List
 import re
 from collections import defaultdict
 
@@ -19,18 +19,24 @@ def num_seq(nums):
     return '[' + ','.join([str(s) if e is None else f'{s}-{e}' for s, e in seq]) + ']'
 
 
-def param_names(params, trainable=True):
-    if isinstance(params, torch.nn.Module):
-        params = [(name, pa) for name, pa in params.named_parameters() if pa.requires_grad or not trainable]
+def param_names(module_or_list: torch.nn.Module | List[str], trainable=True):
+    # group parameters to human readable formats
+    if isinstance(module_or_list, torch.nn.Module):
+        params = [
+            (name, tuple(pa.shape))
+             for name, pa in module_or_list.named_parameters() if pa.requires_grad or not trainable
+        ]
+    else:
+        params = [(n, None) for n in module_or_list]
     seen, ret, nums = set(), [], defaultdict(list)
-    for name, pa in params:
+    for name, shape in params:
         if re.findall(r'\d+', name):
             n = int(re.findall(r'\d+', name)[0])
             name = re.sub(r'(\d+)', '#', name, 1)
             nums[name].append(n)
         if name not in seen:
             seen.add(name)
-            ret.append([name, tuple(pa.shape)])
+            ret.append([name, shape])
     return [(name if name not in nums else name.replace('#', num_seq(nums[name])), sha) for name, sha in ret]
 
 
