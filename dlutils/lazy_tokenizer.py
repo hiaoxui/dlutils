@@ -19,9 +19,12 @@ class LazyTokenizer:
     def tok(self, text: str, special=False):
         return self.tokenizer(text, add_special_tokens=special)['input_ids']
 
-    def remove_bos_eos(self, text: str):
-        assert text.startswith(self.tokenizer.bos_token) and text.endswith(self.tokenizer.eos_token)
-        return text[len(self.tokenizer.bos_token):-len(self.tokenizer.eos_token)]
+    def remove_bos_eos(self, text: str) -> str:
+        if text.startswith(self.tokenizer.bos_token):
+            text = text[len(self.tokenizer.bos_token):]
+        if text.endswith(self.tokenizer.eos_token):
+            text = text[:-len(self.tokenizer.eos_token)]
+        return text
     
     def add_bos_eos_ids(self, ids: List[int]):
         return [self.tokenizer.bos_token_id] + ids + [self.tokenizer.eos_token_id]
