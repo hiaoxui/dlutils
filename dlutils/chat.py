@@ -39,9 +39,9 @@ class ChatPart:
         if to_truncate <= 0:
             return 0
         if self.truncation_side == 'left':
-            self.ids = self.ids[-len(to_truncate):]
+            self.ids = self.ids[to_truncate:]
         else:
-            self.ids = self.ids[:len(to_truncate)]
+            self.ids = self.ids[:-to_truncate]
         return to_truncate
 
 
