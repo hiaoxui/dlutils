@@ -132,7 +132,8 @@ class ChatFactory(LazyTokenizer):
         while remove_left > 2:
             if truncate_idx >= len(trun_parts):
                 raise NotImplementedError
-            remove_left -= trun_parts[truncate_idx].try_to_truncate(remove_left)
+            part = trun_parts[truncate_idx]
+            remove_left -= part.try_to_truncate(remove_left)
             if return_text:
                 part.content = self.tokenizer.decode(part.ids)
         
