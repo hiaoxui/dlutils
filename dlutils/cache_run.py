@@ -6,7 +6,8 @@ import json
 def cache_run(func):
     def inner(*args, **kwargs):
         cache_path = kwargs.pop('cache_path', None)
-        if cache_path is not None and os.path.exists(cache_path):
+        force_update = kwargs.pop('force_update', False)
+        if cache_path is not None and os.path.exists(cache_path) and not force_update:
             if cache_path.endswith('.pkl'):
                 return pickle.load(open(cache_path, 'rb'))
             elif cache_path.endswith('.npz'):
